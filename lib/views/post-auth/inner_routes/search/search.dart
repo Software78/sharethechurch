@@ -30,7 +30,7 @@ class _SearchState extends State<Search> {
   Widget build(BuildContext context) {
     return ScaffoldWidget(
       hasAppBar: true,
-      text: 'search',
+      text: 'Search',
       child: Column(
         children: [
           const SizedBox(

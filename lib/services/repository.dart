@@ -250,7 +250,22 @@ class Repository {
     return await _locationService.getCities(state);
   }
 
-  setCityAndState(String city, String state,) async {
-    return await _cloudDatabaseService.setCityAndState(city, state,uid);
+  setCityAndState(
+    String city,
+    String state,
+  ) async {
+    return await _cloudDatabaseService.setCityAndState(city, state, uid);
+  }
+
+  followUser(String churchId) async {
+    showLoadingDialog();
+    await _cloudDatabaseService.followChurch(churchId);
+    closeRoute();
+  }
+
+  attendEvent(EventModel eventModel) async {
+    showLoadingDialog();
+    await _cloudDatabaseService.attendEvent(eventModel);
+    closeRoute();
   }
 }

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sharethechurch/utils/widgets/buttons/filled_button.dart';
-
-import '../../../../utils/widgets/scaffold_widget/scaffold_widget.dart';
+import 'package:sharethechurch/utils/utils.dart';
 
 class ChurchSearchItem extends StatelessWidget {
   const ChurchSearchItem({
@@ -20,7 +18,9 @@ class ChurchSearchItem extends StatelessWidget {
         const Expanded(child: SizedBox()),
         FilledButton(
           text: 'Follow ${userModel['name']}',
-          onPressed: () {},
+          onPressed: () {
+            repository.followUser(userModel['uid']);
+          },
         ),
         const SizedBox(
           height: 10,

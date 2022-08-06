@@ -30,7 +30,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void sendMessage() async {
     if (_controller.text.isNotEmpty) {
       await repository.sendMessage(
-        '1${_controller.text}',
+        _controller.text,
         currentUser!['uid']!,
         widget.chatModel.user,
       );

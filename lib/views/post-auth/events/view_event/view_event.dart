@@ -115,7 +115,10 @@ class ViewEvent extends StatelessWidget {
           ),
           FilledButton(
             text: userType == 1 ? 'Delete Event' : 'Attend',
-            onPressed: () {},
+            onPressed: () {
+            
+               repository.attendEvent(eventModel);
+            },
           ),
           const SizedBox(
             height: 10,

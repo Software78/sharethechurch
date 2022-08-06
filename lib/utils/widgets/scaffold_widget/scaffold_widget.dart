@@ -3,8 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:sharethechurch/utils/utils.dart';
 import 'package:sharethechurch/views/post-auth/chat/chat_list/chat_list.dart';
-import 'package:sharethechurch/views/post-auth/inner_routes/contact.dart';
-import 'package:sharethechurch/views/post-auth/inner_routes/profile.dart';
 import 'package:sharethechurch/views/post-auth/inner_routes/search/search.dart';
 
 import '../../../views/post-auth/events/create_event_view/create_event_view.dart';
@@ -39,8 +37,13 @@ class HomeScaffoldWidget extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        const FlutterLogo(
-                          size: 200,
+                        Image.asset(
+                          'assets/images/dp.jpeg',
+                          width: 200,
+                          height: 200,
+                        ),
+                        const SizedBox(
+                          height: 20,
                         ),
                         Expanded(
                           child: ListView.separated(
@@ -56,7 +59,7 @@ class HomeScaffoldWidget extends StatelessWidget {
                                         if (index != 0) {
                                           //   _.updateDrawerIndex(index);
                                           closeRoute();
-                                          navigate(userRoutes[index + -1]);
+                                          navigate(userRoutes[0]);
                                         } else {
                                           //    _.updateDrawerIndex(index);
                                           closeRoute();
@@ -241,18 +244,13 @@ class BottomIndexController extends GetxController {
 List<String> userStrings = [
   'Home',
   'Search',
-  'Profile',
-  'Contact Us',
 ];
 
 List<String> churchStrings = [
   'Home',
   'Profile',
-  'Contact Us',
 ];
 
 List<Widget> userRoutes = [
   const Search(),
-  const Profile(),
-  const ContactUs(),
 ];

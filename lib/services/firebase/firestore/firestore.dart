@@ -190,7 +190,30 @@ class CloudDatabaseService {
     }
   }
 
-  followChurch() {}
+  followChurch(String churchId) async {
+    DocumentSnapshot userSnap =
+        await _firestore.collection('users').doc(currentUser!['uid']).get();
+    List userFollowing = (userSnap.data()! as dynamic)['following'];
+    DocumentSnapshot churchSnap =
+        await _firestore.collection('users').doc(churchId).get();
+    List churchFollowing = (churchSnap.data()! as dynamic)['following'];
+    if (userFollowing.contains(churchId) &&
+        churchFollowing.contains(currentUser!['uid'])) {
+      await _firestore.collection('users').doc(currentUser!['uid']).update({
+        'following': FieldValue.arrayRemove([churchId])
+      });
+      await _firestore.collection('users').doc(churchId).update({
+        'following': FieldValue.arrayRemove([currentUser!['uid']])
+      });
+    } else {
+      await _firestore.collection('users').doc(currentUser!['uid']).update({
+        'following': FieldValue.arrayUnion([churchId])
+      });
+      await _firestore.collection('users').doc(churchId).update({
+        'following': FieldValue.arrayUnion([currentUser!['uid']])
+      });
+    }
+  }
 
   markEventAsComplete(String postId) async {
     DocumentSnapshot snapshot =
@@ -237,8 +260,8 @@ class CloudDatabaseService {
           .collection('chats')
           .doc(recipientId)
           .update({
-        'Chats': FieldValue.arrayUnion([text]),
-        'lastText': text.substring(1),
+        'Chats': FieldValue.arrayUnion(['1$text']),
+        'lastText': text,
         'lastTextTime': '${DateTime.now().hour}:${DateTime.now().minute}'
       });
       await _firestore
@@ -247,8 +270,8 @@ class CloudDatabaseService {
           .collection('chats')
           .doc(currentUser!['uid'])
           .update({
-        'Chats': FieldValue.arrayUnion([text]),
-        'lastText': text.substring(1),
+        'Chats': FieldValue.arrayUnion(['0$text']),
+        'lastText': text,
         'lastTextTime': '${DateTime.now().hour}:${DateTime.now().minute}'
       });
     } catch (e) {
@@ -257,9 +280,38 @@ class CloudDatabaseService {
   }
 
   setCityAndState(String city, String state, String? uid) async {
-   await _firestore.collection("users").doc(uid).update({
+    await _firestore.collection("users").doc(uid).update({
       "city": city,
       "state": state,
     });
+  }
+
+  attendEvent(EventModel eventModel) async {
+    DocumentSnapshot? snapshot = await _firestore
+        .collection('users')
+        .doc(eventModel.uid)
+        .collection('events')
+        .doc(eventModel.postId)
+        .get();
+    List attending = (snapshot.data()! as dynamic)['attending'];
+    if (attending.contains(currentUser!['uid'])) {
+      await _firestore
+          .collection('users')
+          .doc(eventModel.uid)
+          .collection('events')
+          .doc(eventModel.postId)
+          .update({
+        'attending': FieldValue.arrayRemove([currentUser!['uid']])
+      });
+    } else {
+      await _firestore
+          .collection('users')
+          .doc(eventModel.uid)
+          .collection('events')
+          .doc(eventModel.postId)
+          .update({
+        'attending': FieldValue.arrayUnion([currentUser!['uid']])
+      });
+    }
   }
 }
