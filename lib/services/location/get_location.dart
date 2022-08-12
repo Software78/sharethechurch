@@ -8,8 +8,6 @@ Future func() async {
   };
 
 
-
-
   var request = http.Request(
       'GET', Uri.parse('https://api.countrystatecity.in/v1/states'));
 
