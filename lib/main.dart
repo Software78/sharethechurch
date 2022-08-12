@@ -11,6 +11,11 @@ bool? session;
 int? userType;
 Map? currentUser;
 
+
+
+
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
