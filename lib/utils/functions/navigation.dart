@@ -37,7 +37,7 @@ navigateAndRemoveAllAfterFunction(
 }
 
 navigate(dynamic widget) {
-  Get.to(widget);
+  Get.to(()=>widget);
 }
 
 navigateAndRemove(Widget widget) {

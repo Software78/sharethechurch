@@ -7,6 +7,7 @@ import 'package:sharethechurch/bloc/loginbloc/login_bloc.dart';
 import 'package:sharethechurch/bloc/registerbloc/register_bloc.dart';
 import 'package:sharethechurch/bloc/userbloc/user_bloc.dart';
 import 'package:sharethechurch/screens/init/controller.dart';
+import 'package:sharethechurch/services/location/location.dart';
 
 import 'firebase_options.dart';
 
@@ -17,6 +18,7 @@ Map? currentUser;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+  LocationService().getLocation();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(MultiBlocProvider(
     providers: [

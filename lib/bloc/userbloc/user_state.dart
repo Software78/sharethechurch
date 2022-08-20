@@ -9,6 +9,8 @@ abstract class UserState extends Equatable {
 
 class UserInitial extends UserState {}
 
+class UserIsNone extends UserState{}
+
 class UserIsChurch extends UserState {}
 
 class UserIsIndividual extends UserState {}

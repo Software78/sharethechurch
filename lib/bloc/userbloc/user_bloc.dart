@@ -14,11 +14,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
   _loadUser(LoadUser event, emit) async {
     bool? session = await repository.checkSession();
-    session!
-        ? () async {
-            bool? isIndividual = await repository.isIndividual();
-            isIndividual! ? emit(UserIsIndividual()) : emit(UserIsChurch());
-          }
-        : emit(UserInitial());
+    if (session == true) {
+      bool? isIndividual = await repository.isIndividual();
+      isIndividual! ? emit(UserIsIndividual()) : emit(UserIsChurch());
+    } else {
+      emit(UserIsNone());
+    }
   }
 }

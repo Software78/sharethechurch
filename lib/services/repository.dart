@@ -9,7 +9,6 @@ import 'package:sharethechurch/models/output/register_response.dart';
 
 import '../models/input/user_model.dart';
 import '../utils/utils.dart';
-import '../views/export.dart';
 import 'authentication/authentication.dart';
 import 'firestore/firestore.dart';
 import 'services.dart';
@@ -69,17 +68,16 @@ class Repository {
       await _authService.logout();
       await _sessionManager.logOutSuccessful();
       closeRoute();
-     // navigateAndRemoveAll(const LoginView());
+      // navigateAndRemoveAll(const LoginView());
     } on FirebaseAuthException catch (e) {
       closeRoute();
       showErrorSnackbar('${e.message}');
     }
   }
 
-   Future<bool?> checkSession() async {
+  Future<bool?> checkSession() async {
     return await _sessionManager.checkSession();
   }
-
 
   ///checks if user is a church or an individual
   Future<bool?> isIndividual() async {

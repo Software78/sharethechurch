@@ -8,15 +8,15 @@ part 'register_event.dart';
 part 'register_state.dart';
 
 class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
-  RegisterBloc() : super(RegisterInitial()) {
+  RegisterBloc() : super(const RegisterInitial()) {
     on<RegisterUser>((event, emit) => _registerUser(event, emit));
   }
 
   _registerUser(RegisterUser event, emit) async {
-    emit(RegisterLoading());
+    emit(const RegisterLoading());
     RegisterResponse response = await repository.registerUser(event.input);
     response.status
-        ? emit(RegisterSuccess())
+        ? emit(const RegisterSuccess())
         : emit(RegisterError(message: response.message.toString()));
   }
 }

@@ -38,3 +38,13 @@ class LocationService {
     }
   }
 }
+
+class LocationManager {
+  final LocationService _service = LocationService();
+
+  Future<LocationRequest> getLocation() async {
+    LocationData? locationData = await _service.getLocation();
+    LocationRequest request = await _service.getLocationName(locationData!);
+    return request;
+  }
+}
