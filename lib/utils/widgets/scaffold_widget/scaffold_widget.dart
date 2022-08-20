@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:sharethechurch/utils/utils.dart';
-import 'package:sharethechurch/views/post-auth/chat/chat_list/chat_list.dart';
 import 'package:sharethechurch/views/post-auth/inner_routes/search/search.dart';
-
-import '../../../views/post-auth/events/create_event_view/create_event_view.dart';
-import '../../../views/post-auth/notifications/send_notification/send_notification.dart';
 
 class HomeScaffoldWidget extends StatelessWidget {
   const HomeScaffoldWidget({
@@ -15,10 +11,6 @@ class HomeScaffoldWidget extends StatelessWidget {
   }) : super(key: key);
 
   final Widget child;
-
-  Future<int?> checkSession() async {
-    return await repository.checkUserType();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -103,33 +95,6 @@ class HomeScaffoldWidget extends StatelessWidget {
             child: child,
           ),
         ),
-        floatingActionButton: _.index == 1 || _.index == 2 || _.index == 3
-            ? FutureBuilder(
-                future: checkSession(),
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.data == 0) {
-                    if (_.index != 2) {
-                      return const SizedBox();
-                    }
-                  }
-                  return FloatingActionButton(
-                    backgroundColor: primaryColor,
-                    onPressed: () {
-                      if (_.index == 1) {
-                        navigate(const CreateEvent());
-                      } else if (_.index == 2) {
-                        navigate(const ChatList());
-                      } else if (_.index == 3) {
-                        navigate(const SendNotification());
-                      }
-                    },
-                    child: SvgPicture.asset(
-                      'assets/svgs/${listOfIcons[_.index]}',
-                      color: Colors.white,
-                    ),
-                  );
-                })
-            : null,
         bottomNavigationBar: BottomAppBar(
           color: Colors.white,
           elevation: 10,

@@ -1,16 +1,17 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sharethechurch/main.dart';
-import 'package:sharethechurch/models/chat_model.dart';
-import 'package:sharethechurch/models/city_model.dart';
-import 'package:sharethechurch/models/event_model.dart';
-import 'package:sharethechurch/models/notifications_model.dart';
-import 'package:sharethechurch/services/location/location.dart';
-import 'package:sharethechurch/services/mail_service/mail_service.dart';
-import 'package:sharethechurch/views/pre-auth/sign_up_view/church_sign_up/church_location_view/church_location_view.dart';
+import 'package:sharethechurch/models/chat/chat_model.dart';
+import 'package:sharethechurch/models/events/event_model.dart';
+import 'package:sharethechurch/models/events/notifications_model.dart';
+import 'package:sharethechurch/models/input/register_input.dart';
+import 'package:sharethechurch/models/output/login_response.dart';
+import 'package:sharethechurch/models/output/register_response.dart';
 
-import '../models/user_model.dart';
+import '../models/input/user_model.dart';
 import '../utils/utils.dart';
 import '../views/export.dart';
+import 'authentication/authentication.dart';
+import 'firestore/firestore.dart';
 import 'services.dart';
 
 String? uid;
@@ -19,79 +20,44 @@ class Repository {
   final AuthService _authService = AuthService();
   final SessionManager _sessionManager = SessionManager();
   final CloudDatabaseService _cloudDatabaseService = CloudDatabaseService();
-  final MailService _mailService = MailService();
-  final LocationService _locationService = LocationService();
 
-  //authentication
-  registerUser(
-      String email, String password, String username, bool isIndividual) async {
-    List<String> keywords = [];
-
-    if (!isIndividual) {
-      for (var i = 1; i <= username.length; i++) {
-        keywords.add(username.substring(0, i).toLowerCase());
-      }
-    }
-
+  Future<RegisterResponse> registerUser(RegisterInput input) async {
     try {
-      showLoadingDialog();
       UserCredential credential =
-          await _authService.registerUser(email, password);
-      uid = credential.user!.uid;
-      UserModel user = UserModel(
-        email: email,
-        name: username,
-        userTypeId: isIndividual ? 0 : 1,
-        uid: credential.user!.uid,
-        city: '',
-        following: [],
-        state: '',
-        address: '',
-        keywords: isIndividual ? null : keywords,
-      );
-
-      await _cloudDatabaseService.addUserToDb(user.uid, user.toJson());
-
-      // await _mailService.sendWelcomeMail(email);
-      closeRoute();
-      navigateAndRemove(ChurchLocation(
-        states: await getStates(),
-      ));
+          await _authService.registerUser(input.email, input.password);
+      return RegisterResponse(status: true, credential: credential);
     } on FirebaseAuthException catch (e) {
-      closeRoute();
-      showErrorSnackbar('${e.message}');
+      return RegisterResponse(status: false, message: e.message);
     }
   }
 
-  /// 1.login
-  /// 2. check user type from the backend
-  /// 3. save the user type to memory for persistende
-  /// 4. navigate to the respective screen
-  /// 5. on error, show snackbar
-  loginUser(String email, String password) async {
+  Future<LoginResponse> loginUser(String email, String password) async {
     try {
-      showLoadingDialog();
       UserCredential credential = await _authService.loginUser(email, password);
-      UserModel user =
-          await _cloudDatabaseService.getUserInfo(credential.user!.uid);
-      await _sessionManager.logInSuccessful(
-        userTypeId: user.userTypeId,
-        token: user.uid,
-        email: user.email,
-        city: user.city,
-        state: user.state,
-        address: user.address,
-        name: user.name,
-      );
-
-      currentUser = await getUserDetails();
-      closeRoute();
-      navigateAndRemoveAll(
-          user.userTypeId == 0 ? const Individual() : const Church());
+      return LoginResponse(status: true, credential: credential);
     } on FirebaseAuthException catch (e) {
-      closeRoute();
-      showErrorSnackbar('${e.message}');
+      return LoginResponse(
+        status: false,
+        message: e.message,
+      );
     }
+
+    // UserModel user =
+    //     await _cloudDatabaseService.getUserInfo(credential.user!.uid);
+    // await _sessionManager.logInSuccessful(
+    //   userTypeId: user.userTypeId,
+    //   token: user.uid,
+    //   email: user.email,
+    //   city: user.city,
+    //   state: user.state,
+    //   address: user.address,
+    //   name: user.name,
+    // );
+
+    // currentUser = await getUserDetails();
+    // closeRoute();
+    // navigateAndRemoveAll(
+    //     user.userTypeId == 0 ? const Individual() : const Church());
   }
 
   /// 1. logout via firebase
@@ -103,40 +69,21 @@ class Repository {
       await _authService.logout();
       await _sessionManager.logOutSuccessful();
       closeRoute();
-      navigateAndRemoveAll(const LoginView());
+     // navigateAndRemoveAll(const LoginView());
     } on FirebaseAuthException catch (e) {
       closeRoute();
       showErrorSnackbar('${e.message}');
     }
   }
 
-  resetPassword(String email) async {
-    try {
-      showLoadingDialog();
-      await _authService.forgotPassword(email);
-      closeRoute();
-      showMessageDialog('Email Sent');
-    } on FirebaseAuthException catch (e) {
-      closeRoute();
-      showErrorSnackbar('${e.message}');
-    }
-  }
-
-  //session management
-
-  ///checks if user is previously signed in
-  Future<bool?> checkSession() async {
+   Future<bool?> checkSession() async {
     return await _sessionManager.checkSession();
   }
 
-  ///checks if user is a church or an individual
-  Future<int?> checkUserType() async {
-    return await _sessionManager.checkUserType();
-  }
 
-  ///gets a user information from storage
-  Future<Map<String, String?>> getUserDetails() async {
-    return await _sessionManager.getUserDetails();
+  ///checks if user is a church or an individual
+  Future<bool?> isIndividual() async {
+    return await _sessionManager.checkUserType();
   }
 
   ///firestore methods
@@ -242,13 +189,13 @@ class Repository {
   sendMessage(String text, String user, String recipientId) =>
       _cloudDatabaseService.sendMessage(text, user, recipientId);
 
-  Future<List?> getStates() async {
-    return await _locationService.getStates();
-  }
+  // Future<List?> getStates() async {
+  //   return await _locationService.getStates();
+  // }
 
-  Future<List<City>> getCities(String state) async {
-    return await _locationService.getCities(state);
-  }
+  // Future<List<City>> getCities(String state) async {
+  //   return await _locationService.getCities(state);
+  // }
 
   setCityAndState(
     String city,

@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:sharethechurch/models/event_model.dart';
+import 'package:sharethechurch/models/events/event_model.dart';
 import 'package:sharethechurch/utils/utils.dart';
 import 'package:sharethechurch/views/post-auth/events/view_event/view_event.dart';
 

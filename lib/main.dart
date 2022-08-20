@@ -1,31 +1,37 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
+import 'package:sharethechurch/bloc/loginbloc/login_bloc.dart';
+import 'package:sharethechurch/bloc/registerbloc/register_bloc.dart';
+import 'package:sharethechurch/bloc/userbloc/user_bloc.dart';
+import 'package:sharethechurch/screens/init/controller.dart';
 
 import 'firebase_options.dart';
-import 'utils/utils.dart';
-import 'views/export.dart';
 
 bool? session;
 int? userType;
 Map? currentUser;
 
-
-
-
-
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  session = await repository.checkSession();
-  if (session != null) {
-    userType = await repository.checkUserType();
-    currentUser = await repository.getUserDetails();
-  }
-  runApp(const MyApp());
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider<UserBloc>(
+        create: (context) => UserBloc(),
+      ),
+      BlocProvider<LoginBloc>(
+        create: (context) => LoginBloc(),
+      ),
+      BlocProvider<RegisterBloc>(
+        create: (context) => RegisterBloc(),
+      ),
+    ],
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -34,13 +40,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'share the church',
-      home: session != true
-          ? const WelcomeView()
-          : userType != 0
-              ? const Church()
-              : const Individual(),
+      home: BlocBuilder<UserBloc, UserState>(
+        builder: (context, state) {
+          if (state is UserInitial) {
+            return const InitScreen();
+          }
+          if (state is UserIsChurch) {
+            return const Scaffold();
+          }
+          if (state is UserIsIndividual) {
+            return const Scaffold();
+          }
+          return Container();
+        },
+      ),
     );
   }
 }

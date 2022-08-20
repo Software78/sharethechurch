@@ -1,43 +1,40 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:sharethechurch/models/city_model.dart';
-
-import '../../models/state_model.dart';
+import 'package:location/location.dart';
+import 'package:sharethechurch/models/location/location_model.dart';
+import 'package:sharethechurch/models/location/location_request.dart';
 
 class LocationService {
-  final String _HEADER_API_KEY = 'X-CSCAPI-KEY';
+  final Location _location = Location();
 
-  final String _HEADER_API_KEY_VALUE =
-      'VE4wV3VsU2hQSkJTRHNMZUlDTUM1NFg0RnZCbmRqUDFCcWE5bHpsdg==';
-
-  final String _url = 'https://api.countrystatecity.in/v1/countries/US/states';
-
-  Future<List?> getStates() async {
-    var headers = {_HEADER_API_KEY: _HEADER_API_KEY_VALUE};
-    var response = await http.get(Uri.parse(_url),
-        headers: {_HEADER_API_KEY: _HEADER_API_KEY_VALUE});
-    if (response.statusCode == 200) {
-      var results = jsonDecode(response.body);
-      List finalResults = results.map((e) => States.fromJson(e)).toList();
-      return finalResults;
-    } else {
-      return null;
+  Future<LocationData?> getLocation() async {
+    late LocationData data;
+    bool serviceEnabled = await _location.serviceEnabled();
+    if (!serviceEnabled) {
+      _location.requestService();
     }
+    PermissionStatus permissionStatus = await _location.requestPermission();
+    if (permissionStatus == PermissionStatus.granted) {
+      data = await _location.getLocation();
+      return data;
+    }
+    return null;
   }
 
-  Future<List<City>> getCities(String state) async {
-    List<City> cities = [];
-    var headers = {_HEADER_API_KEY: _HEADER_API_KEY_VALUE};
-    var response = await http.get(Uri.parse('$_url/$state/cities'),
-        headers: {_HEADER_API_KEY: _HEADER_API_KEY_VALUE});
-    if (response.statusCode == 200) {
-      var results = jsonDecode(response.body) as List;
-      cities = results.map((e) => City.fromJson(e)).toList();
+  Future<LocationRequest> getLocationName(LocationData data) async {
+    try {
+      http.Response response = await http.get(Uri.parse(
+          'http://api.positionstack.com/v1/reverse?access_key=0386ef665d8ed3d906681af87bd4ba16&query=${data.latitude},${data.longitude}'));
+      if (response.statusCode == 200) {
+        var result = jsonDecode(response.body)['data'][0];
+        LocationModel model = LocationModel.fromJson(result);
+        return LocationRequest(status: true, model: model);
+      } else {
+        return LocationRequest(status: false);
+      }
+    } catch (e) {
+      return LocationRequest(status: false);
     }
-
-    return cities;
   }
 }

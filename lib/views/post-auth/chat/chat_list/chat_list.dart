@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:sharethechurch/utils/utils.dart';
 import 'package:sharethechurch/utils/widgets/recipients_list_tile/recipients_list_tile.dart';
 
-import '../../../../models/user_model.dart';
+import '../../../../models/input/user_model.dart';
 
 class ChatList extends StatelessWidget {
   const ChatList({Key? key}) : super(key: key);

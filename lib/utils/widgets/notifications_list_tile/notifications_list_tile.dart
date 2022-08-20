@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sharethechurch/models/notifications_model.dart';
+import 'package:sharethechurch/models/events/notifications_model.dart';
 
 import '../../utils.dart';
 

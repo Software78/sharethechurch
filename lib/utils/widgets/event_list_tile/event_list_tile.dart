@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sharethechurch/models/event_model.dart';
+import 'package:sharethechurch/models/events/event_model.dart';
 
 import '../text_widgets/body_text.dart';
 

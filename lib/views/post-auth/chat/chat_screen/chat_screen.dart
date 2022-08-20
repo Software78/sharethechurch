@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:sharethechurch/main.dart';
-import 'package:sharethechurch/models/chat_model.dart';
+import 'package:sharethechurch/models/chat/chat_model.dart';
 import 'package:sharethechurch/utils/utils.dart';
 
 class ChatScreen extends StatefulWidget {

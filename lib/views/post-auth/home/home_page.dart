@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sharethechurch/models/event_model.dart';
+import 'package:sharethechurch/models/events/event_model.dart';
 import 'package:sharethechurch/utils/utils.dart';
 import 'package:sharethechurch/utils/widgets/event_list_tile/event_list_tile.dart';
 

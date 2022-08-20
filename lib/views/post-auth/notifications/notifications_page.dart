@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sharethechurch/utils/utils.dart';
 
-import '../../../models/notifications_model.dart';
+import '../../../models/events/notifications_model.dart';
 import '../../../utils/widgets/notifications_list_tile/notifications_list_tile.dart';
 
 class NotificationsView extends StatelessWidget {

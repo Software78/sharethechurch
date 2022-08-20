@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sharethechurch/models/user_model.dart';
+import 'package:sharethechurch/models/input/user_model.dart';
 
 import '../../../main.dart';
 import '../../utils.dart';

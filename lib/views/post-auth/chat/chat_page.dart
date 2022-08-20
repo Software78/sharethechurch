@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sharethechurch/models/chat_model.dart';
+import 'package:sharethechurch/models/chat/chat_model.dart';
 import 'package:sharethechurch/utils/utils.dart';
 import 'package:sharethechurch/views/post-auth/chat/chat_screen/chat_screen.dart';
 
