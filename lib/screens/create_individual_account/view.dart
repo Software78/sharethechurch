@@ -41,7 +41,6 @@ class CreateIndividualAccounView extends StatelessView<
                 alignment: Alignment.centerLeft,
                 child: MediumBodyText(text: 'Full Name'),
               ),
-
               const SizedBox(height: 16),
               InputField(
                 controller: controller.usernameController,

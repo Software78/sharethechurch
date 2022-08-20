@@ -10,14 +10,16 @@ part 'login_event.dart';
 part 'login_state.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  LoginBloc() : super(LoginInitial()) {
+  LoginBloc() : super(const LoginInitial()) {
     on<LoginUser>((event, emit) => _loginUser(event, emit));
   }
 
   _loginUser(LoginUser event, emit) async {
-    emit(LoginInitial());
+    emit(const LoginLoading());
     LoginResponse response =
         await repository.loginUser(event.input.username, event.input.password);
-    response.status ? emit(LoginSuccess()) : LoginError();
+    response.status
+        ? emit(const LoginSuccess())
+        : emit(LoginError(response: response));
   }
 }

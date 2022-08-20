@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sharethechurch/models/input/login_input.dart';
 
+import '../../bloc/bloc.dart';
 import 'view.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -13,7 +16,7 @@ class LoginController extends State<LoginScreen> {
   late TextEditingController emailController;
   late TextEditingController passwordController;
 
-  bool showPassword = false;
+  bool showPassword = true;
 
   toggleShowPassword() {
     setState(() {
@@ -35,7 +38,30 @@ class LoginController extends State<LoginScreen> {
     super.dispose();
   }
 
-  login() {}
+  login() {
+    context.read<LoginBloc>().add(
+          LoginUser(
+            input: LoginInput(
+              username: emailController.text,
+              password: passwordController.text,
+            ),
+          ),
+        );
+  }
+
+  loginLoading() {
+    print('loading');
+  }
+
+  loginSuccess() {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(const SnackBar(content: Text('login successful')));
+  }
+
+  loginError(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
 
   forgotPassword() {}
 

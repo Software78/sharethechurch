@@ -7,9 +7,19 @@ abstract class RegisterState extends Equatable {
   List<Object> get props => [];
 }
 
-class RegisterInitial extends RegisterState {}
+class RegisterInitial extends RegisterState {
+  const RegisterInitial();
 
-class RegisterLoading extends RegisterState {}
+  @override
+  List<Object> get props => [];
+}
+
+class RegisterLoading extends RegisterState {
+  const RegisterLoading();
+
+  @override
+  List<Object> get props => [];
+}
 
 class RegisterError extends RegisterState {
   final String message;
@@ -20,4 +30,9 @@ class RegisterError extends RegisterState {
   List<Object> get props => [message];
 }
 
-class RegisterSuccess extends RegisterState {}
+class RegisterSuccess extends RegisterState {
+  const RegisterSuccess();
+
+  @override
+  List<Object> get props => [];
+}
