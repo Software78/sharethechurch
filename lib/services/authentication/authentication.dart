@@ -5,23 +5,20 @@ class AuthService {
 
   Future<UserCredential> loginUser(String email, String password) async {
     return await _auth.signInWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+        email: email, password: password);
   }
 
   Future<UserCredential> registerUser(String email, String password) async {
     return await _auth.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
+        email: email, password: password);
   }
 
   logout() async {
-   return await _auth.signOut();
+    return await _auth.signOut();
   }
 
   forgotPassword(String email) async {
-   return await _auth.sendPasswordResetEmail(email: email);
+    return await _auth.sendPasswordResetEmail(email: email);
   }
+
 }

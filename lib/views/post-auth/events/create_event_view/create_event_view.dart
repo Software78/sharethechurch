@@ -52,32 +52,32 @@ class _CreateEventState extends State<CreateEvent> {
     super.dispose();
   }
 
-  addEvent() {
-    showLoadingDialog();
-    if (_descriptionController.text.isNotEmpty &&
-        _eventNameController.text.isNotEmpty &&
-        startTime != null &&
-        startDate != null &&
-        endDate != null &&
-        endTime != null) {
-      repository.createEvent(
-        _eventNameController.text,
-        _descriptionController.text,
-        '${startDate!.year}/${startDate!.month}/${startDate!.day}',
-        '${startTime!.hour} : ${startTime!.minute}',
-        '${endDate!.year}/${endDate!.month}/${endDate!.day}',
-        '${endTime!.hour} : ${endTime!.minute}',
-      );
-      closeRoute();
-      navigateRemoveAllGoHome();
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Incomplete Form'),
-        ),
-      );
-    }
-  }
+  // addEvent() {
+  //   showLoadingDialog();
+  //   if (_descriptionController.text.isNotEmpty &&
+  //       _eventNameController.text.isNotEmpty &&
+  //       startTime != null &&
+  //       startDate != null &&
+  //       endDate != null &&
+  //       endTime != null) {
+  //     repository.createEvent(
+  //       _eventNameController.text,
+  //       _descriptionController.text,
+  //       '${startDate!.year}/${startDate!.month}/${startDate!.day}',
+  //       '${startTime!.hour} : ${startTime!.minute}',
+  //       '${endDate!.year}/${endDate!.month}/${endDate!.day}',
+  //       '${endTime!.hour} : ${endTime!.minute}',
+  //     );
+  //     closeRoute();
+  //     navigateRemoveAllGoHome();
+  //   } else {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       const SnackBar(
+  //         content: Text('Incomplete Form'),
+  //       ),
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -224,9 +224,9 @@ class _CreateEventState extends State<CreateEvent> {
             ],
           ),
           const Expanded(child: SizedBox()),
-          FilledButton(
+          const FilledButton(
             text: 'Add Event',
-            onPressed: addEvent,
+            onPressed: null,
           ),
           const SizedBox(
             height: 10,

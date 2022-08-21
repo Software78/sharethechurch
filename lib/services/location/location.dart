@@ -7,6 +7,9 @@ import 'package:sharethechurch/models/location/location_request.dart';
 
 class LocationService {
   final Location _location = Location();
+  late LocationRequest _request;
+
+  LocationRequest get request => _request;
 
   Future<LocationData?> getLocation() async {
     late LocationData data;
@@ -22,19 +25,19 @@ class LocationService {
     return null;
   }
 
-  Future<LocationRequest> getLocationName(LocationData data) async {
+  getLocationName(LocationData data) async {
     try {
       http.Response response = await http.get(Uri.parse(
           'http://api.positionstack.com/v1/reverse?access_key=0386ef665d8ed3d906681af87bd4ba16&query=${data.latitude},${data.longitude}'));
       if (response.statusCode == 200) {
         var result = jsonDecode(response.body)['data'][0];
         LocationModel model = LocationModel.fromJson(result);
-        return LocationRequest(status: true, model: model);
+        _request = LocationRequest(status: true, model: model);
       } else {
-        return LocationRequest(status: false);
+        _request = LocationRequest(status: false);
       }
     } catch (e) {
-      return LocationRequest(status: false);
+      _request = LocationRequest(status: false);
     }
   }
 }

@@ -1,7 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sharethechurch/models/input/register_input.dart';
 import 'package:sharethechurch/utils/utils.dart';
 
+import '../../bloc/bloc.dart';
 import 'view.dart';
 
 class CreateIndividualAccountScreen extends StatefulWidget {
@@ -52,31 +55,27 @@ class CreateIndividualAccounController
                     const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                 child: Column(
                   children: [
-                    InkWell(
-                        onTap: () {},
-                        child: ExpansionTile(
-                          title: Text(files[0]),
-                          initiallyExpanded: true,
-                          children: const [Text('')],
-                        )),
-                    InkWell(
-                        onTap: () {},
-                        child: ExpansionTile(
-                          title: Text(files[1]),
-                          children: const [Text('')],
-                        )),
-                    InkWell(
-                        onTap: () {},
-                        child: ExpansionTile(
-                          title: Text(files[2]),
-                          children: const [Text('')],
-                        )),
+                    ExpansionTile(
+                      title: Text(files[0]),
+                      initiallyExpanded: true,
+                      children: const [Text('')],
+                    ),
+                    ExpansionTile(
+                      title: Text(files[1]),
+                      children: const [Text('')],
+                    ),
+                    ExpansionTile(
+                      title: Text(files[2]),
+                      children: const [Text('')],
+                    ),
                     const Expanded(
                       child: SizedBox(),
                     ),
                     FilledButton(
                       text: 'Accept',
-                      onPressed: () {},
+                      onPressed: () {
+                        createAccount();
+                      },
                     )
                   ],
                 ),
@@ -114,7 +113,17 @@ class CreateIndividualAccounController
     super.dispose();
   }
 
-  createAccount() {}
+  createAccount() {
+    context.read<RegisterBloc>().add(
+          RegisterUser(
+            input: RegisterInput(
+                email: emailController.text,
+                username: usernameController.text,
+                password: passwordController.text,
+                isIndividual: true),
+          ),
+        );
+  }
 
   @override
   Widget build(BuildContext context) {

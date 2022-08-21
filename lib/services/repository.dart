@@ -1,13 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:location/location.dart';
 import 'package:sharethechurch/main.dart';
-import 'package:sharethechurch/models/chat/chat_model.dart';
-import 'package:sharethechurch/models/events/event_model.dart';
-import 'package:sharethechurch/models/events/notifications_model.dart';
+import 'package:sharethechurch/models/input/database_input.dart';
 import 'package:sharethechurch/models/input/register_input.dart';
-import 'package:sharethechurch/models/output/login_response.dart';
-import 'package:sharethechurch/models/output/register_response.dart';
+import 'package:sharethechurch/services/location/location.dart';
 
-import '../models/input/user_model.dart';
+import '../models/models.dart';
 import '../utils/utils.dart';
 import 'authentication/authentication.dart';
 import 'firestore/firestore.dart';
@@ -19,11 +17,25 @@ class Repository {
   final AuthService _authService = AuthService();
   final SessionManager _sessionManager = SessionManager();
   final CloudDatabaseService _cloudDatabaseService = CloudDatabaseService();
+  final LocationService _service = LocationService();
+
+  getLocationOnInit() async {
+    LocationData? data = await _service.getLocation();
+    await _service.getLocationName(data!);
+  }
 
   Future<RegisterResponse> registerUser(RegisterInput input) async {
     try {
+      await repository.getLocationOnInit();
       UserCredential credential =
           await _authService.registerUser(input.email, input.password);
+      await _cloudDatabaseService.saveUserInfo(
+        DatabaseInput(
+          input: input,
+          request: _service.request,
+          credential: credential,
+        ),
+      );
       return RegisterResponse(status: true, credential: credential);
     } on FirebaseAuthException catch (e) {
       return RegisterResponse(status: false, message: e.message);
@@ -41,38 +53,23 @@ class Repository {
       );
     }
 
-    // UserModel user =
-    //     await _cloudDatabaseService.getUserInfo(credential.user!.uid);
-    // await _sessionManager.logInSuccessful(
-    //   userTypeId: user.userTypeId,
-    //   token: user.uid,
-    //   email: user.email,
-    //   city: user.city,
-    //   state: user.state,
-    //   address: user.address,
-    //   name: user.name,
-    // );
-
     // currentUser = await getUserDetails();
     // closeRoute();
     // navigateAndRemoveAll(
     //     user.userTypeId == 0 ? const Individual() : const Church());
   }
 
-  /// 1. logout via firebase
-  /// 2. clear session on storage
-  /// 3. navigate to loginscreen
-  logOutUser() async {
+  Future<ForgotPasswordResponse> forgotPassword(String email) async {
     try {
-      showLoadingDialog();
-      await _authService.logout();
-      await _sessionManager.logOutSuccessful();
-      closeRoute();
-      // navigateAndRemoveAll(const LoginView());
+      await _authService.forgotPassword(email);
+      return ForgotPasswordResponse(status: true);
     } on FirebaseAuthException catch (e) {
-      closeRoute();
-      showErrorSnackbar('${e.message}');
+      return ForgotPasswordResponse(status: false, message: e.message);
     }
+  }
+
+  getUserFromDatabase(String uid) async {
+    await _cloudDatabaseService.getUserInfo(uid);
   }
 
   Future<bool?> checkSession() async {
@@ -82,6 +79,10 @@ class Repository {
   ///checks if user is a church or an individual
   Future<bool?> isIndividual() async {
     return await _sessionManager.checkUserType();
+  }
+
+  loginSucessful({required bool isIndividual}) async {
+    await _sessionManager.setUserType(isIndividual);
   }
 
   ///firestore methods
@@ -120,39 +121,39 @@ class Repository {
     showMessageDialog('Event Completed');
   }
 
-  createEvent(
-    String title,
-    String description,
-    String startDate,
-    String startTime,
-    String endDate,
-    String endTime,
-  ) async {
-    await _cloudDatabaseService.addEvent(
-      title: title,
-      description: description,
-      startDate: startDate,
-      startTime: startTime,
-      endDate: endDate,
-      endTime: endTime,
-    );
-  }
+  // createEvent(
+  //   String title,
+  //   String description,
+  //   String startDate,
+  //   String startTime,
+  //   String endDate,
+  //   String endTime,
+  // ) async {
+  //   await _cloudDatabaseService.addEvent(
+  //     title: title,
+  //     description: description,
+  //     startDate: startDate,
+  //     startTime: startTime,
+  //     endDate: endDate,
+  //     endTime: endTime,
+  //   );
+  // }
 
-  sendNotification(String title, String description) async {
-    if (title != '' && description != '') {
-      showLoadingDialog();
-      await _cloudDatabaseService.sendNotification(
-          title, description, currentUser!['name']);
-      closeRoute();
-      navigateRemoveAllGoHome();
-    } else {
-      showErrorSnackbar('field cannot be empty');
-    }
-  }
+  // sendNotification(String title, String description) async {
+  //   if (title != '' && description != '') {
+  //     showLoadingDialog();
+  //     await _cloudDatabaseService.sendNotification(
+  //         title, description, currentUser!['name']);
+  //     closeRoute();
+  //     navigateRemoveAllGoHome();
+  //   } else {
+  //     showErrorSnackbar('field cannot be empty');
+  //   }
+  // }
 
-  Future<List<UserModel>> getRecipients() async {
-    return await _cloudDatabaseService.getRecipients();
-  }
+  // Future<List<UserModel>> getRecipients() async {
+  //   return await _cloudDatabaseService.getRecipients();
+  // }
 
   Future<List<ChatModel>> getChatList() async {
     List<ChatModel> chats = [];

@@ -6,6 +6,7 @@ class SessionManager {
   Future<SharedPreferences> _prefs() async {
     return await SharedPreferences.getInstance();
   }
+
   //sets login key to true
   logInSuccessful() async {
     await _prefs().then((value) => value.setBool(KEY_LOGGED_IN, true));
@@ -14,6 +15,7 @@ class SessionManager {
   //sets login key to false
   logOutSuccessful() async {
     await _prefs().then((value) => value.setBool(KEY_LOGGED_IN, false));
+    await _prefs().then((value) => value.clear());
   }
 
   //checks login key

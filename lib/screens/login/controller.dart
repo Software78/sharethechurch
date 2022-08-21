@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/route_manager.dart';
 import 'package:sharethechurch/models/input/login_input.dart';
+import 'package:sharethechurch/screens/forgot_password/controller.dart';
 
 import '../../bloc/bloc.dart';
 import 'view.dart';
@@ -63,7 +65,9 @@ class LoginController extends State<LoginScreen> {
         .showSnackBar(SnackBar(content: Text(message)));
   }
 
-  forgotPassword() {}
+  forgotPassword() {
+    Get.to(() => const ForgotPasswordScreen());
+  }
 
   @override
   Widget build(BuildContext context) {

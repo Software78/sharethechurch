@@ -13,7 +13,7 @@ class ChatList extends StatelessWidget {
       hasAppBar: true,
       text: 'Send a message',
       child: FutureBuilder<List<UserModel>>(
-        future: repository.getRecipients(),
+        future:null,
         builder: (context, snapshot) {
           if (snapshot.data != null) {
             return ListView.separated(

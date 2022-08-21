@@ -55,8 +55,6 @@ class InputField extends StatelessWidget {
   }
 }
 
-
-
 class MultiLineTextField extends StatelessWidget {
   const MultiLineTextField({
     Key? key,
@@ -75,13 +73,13 @@ class MultiLineTextField extends StatelessWidget {
       decoration: InputDecoration(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: primaryColor,
           ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(4),
-          borderSide: BorderSide(
+          borderSide: const BorderSide(
             color: primaryColor,
             width: 2,
           ),

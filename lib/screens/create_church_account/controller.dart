@@ -1,8 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/route_manager.dart';
 import 'package:sharethechurch/models/input/register_input.dart';
 
 import '../../bloc/bloc.dart';
+import '../../utils/utils.dart';
 import 'view.dart';
 
 class CreateChurchAccountScreen extends StatefulWidget {
@@ -75,6 +78,51 @@ class CreateChurchAccountScreenController
                 ),
               ),
             );
+  }
+
+  List<String> files = ['Copyright Policy', 'Disclaimer', 'Privacy Policy'];
+
+  showTermsDialog() {
+    showCupertinoModalPopup(
+        context: context,
+        builder: (context) {
+          return SizedBox(
+            height: MediaQuery.of(context).size.height * 0.7,
+            child: Material(
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                child: Column(
+                  children: [
+                    ExpansionTile(
+                      title: Text(files[0]),
+                      initiallyExpanded: true,
+                      children: const [Text('')],
+                    ),
+                    ExpansionTile(
+                      title: Text(files[1]),
+                      children: const [Text('')],
+                    ),
+                    ExpansionTile(
+                      title: Text(files[2]),
+                      children: const [Text('')],
+                    ),
+                    const Expanded(
+                      child: SizedBox(),
+                    ),
+                    FilledButton(
+                      text: 'Accept',
+                      onPressed: () {
+                        Get.back();
+                        createAccount();
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 
   @override

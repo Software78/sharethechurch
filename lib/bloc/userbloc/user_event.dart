@@ -9,3 +9,5 @@ abstract class UserEvent extends Equatable {
 
 
 class LoadUser extends UserEvent {}
+
+class LogUserIn extends UserEvent{}

@@ -1,89 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:sharethechurch/main.dart';
 import 'package:sharethechurch/models/events/notifications_model.dart';
+import 'package:sharethechurch/models/input/database_input.dart';
 import 'package:sharethechurch/models/input/user_model.dart';
 import 'package:sharethechurch/utils/functions/dialog.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../models/chat/chat_model.dart';
 import '../../../models/events/event_model.dart';
+import '../../models/chat/chat_model.dart';
 
 class CloudDatabaseService {
+  final String userCollectionPath = "users";
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  addUserToDb(String uid, Map<String, dynamic> userJson) async {
-    await _firestore.collection("users").doc(uid).set(userJson);
+  saveUserInfo(DatabaseInput input) async {
+    await _firestore
+        .collection(userCollectionPath)
+        .doc(input.credential.user!.uid)
+        .set(input.toJson(input));
   }
 
-  Future<UserModel> getUserInfo(String uid) async {
-    DocumentSnapshot snapshot =
-        await _firestore.collection('users').doc(uid).get();
-    UserModel userModel = UserModel.fromSnap(snapshot);
-    return userModel;
+  Future<DocumentSnapshot> getUserInfo(String uid) async {
+    return await _firestore.collection(userCollectionPath).doc(uid).get();
   }
 
-  addEvent({
-    required String title,
-    required String description,
-    required String startDate,
-    required String startTime,
-    required String endDate,
-    required String endTime,
-  }) async {
-    var postId = const Uuid().v1();
-    UserModel userModel = await getUserInfo(currentUser!["uid"]);
-
-    EventModel event = EventModel(
-      uid: userModel.uid,
-      title: title.trim(),
-      description: description.trim(),
-      postId: postId,
-      startDate: startDate,
-      startTime: startTime,
-      endDate: endDate,
-      endTime: endTime,
-      church: userModel.name,
-      attending: [],
-    );
-
-    try {
-      for (var i = 0; i < userModel.following.length; i++) {
-        await _firestore
-            .collection('users')
-            .doc(userModel.following[i])
-            .collection('events')
-            .doc(postId)
-            .set(event.toJson());
-      }
-      await _firestore
-          .collection('users')
-          .doc(userModel.uid)
-          .collection('events')
-          .doc(postId)
-          .set(event.toJson());
-    } catch (e) {
-      showErrorSnackbar(e.toString());
-    }
-  }
-
+ 
   deleteEvent() {}
 
-  Future<List<UserModel>> getRecipients() async {
-    List<UserModel> list = [];
-    try {
-      UserModel userModel = await getUserInfo(currentUser!['uid']);
-      for (var i = 0; i < userModel.following.length; i++) {
-        UserModel user = await getUserInfo(userModel.following[i]);
-        // print(user);
-        list.add(user);
-      }
-    } catch (e) {
-      print(e.toString());
-    }
-
-    return list;
-  }
-
+ 
   Future getNotifications() async {
     return await _firestore
         .collection('users')
@@ -103,35 +48,6 @@ class CloudDatabaseService {
 
   readNotification() {}
 
-  sendNotification(String title, String description, String church) async {
-    var postId = const Uuid().v1();
-
-    NotificationsModel notifications = NotificationsModel(
-      title: title,
-      description: description,
-      postId: postId,
-      church: currentUser!['name'],
-    );
-    UserModel userModel = await getUserInfo(currentUser!["uid"]);
-    try {
-      for (var i = 0; i < userModel.following.length; i++) {
-        await _firestore
-            .collection('users')
-            .doc(userModel.following[i])
-            .collection('notifications')
-            .doc(postId)
-            .set(notifications.toJson());
-      }
-      await _firestore
-          .collection('users')
-          .doc(userModel.uid)
-          .collection('notifications')
-          .doc(postId)
-          .set(notifications.toJson());
-    } catch (e) {
-      showErrorSnackbar(e.toString());
-    }
-  }
 
   Stream searchChurch(String text) {
     return _firestore

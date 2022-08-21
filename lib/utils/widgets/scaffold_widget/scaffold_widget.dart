@@ -70,9 +70,7 @@ class HomeScaffoldWidget extends StatelessWidget {
                         ),
                         ReverseFilledButton(
                           text: 'Sign out',
-                          onPressed: () {
-                            repository.logOutUser();
-                          },
+                          onPressed: () {},
                         ),
                         const SizedBox(height: 40),
                       ],

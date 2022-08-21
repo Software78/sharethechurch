@@ -14,12 +14,11 @@ class RegisterScreen extends StatefulWidget {
 
 class RegisterController extends State<RegisterScreen> {
   createIndividualAccount() {
-    Get.to(() => CreateIndividualAccountScreen());
+    Get.to(() => const CreateIndividualAccountScreen());
   }
 
   createChurchAccount() {
-
-    Get.to(() => CreateChurchAccountScreen());
+    Get.to(() => const CreateChurchAccountScreen());
   }
 
   @override

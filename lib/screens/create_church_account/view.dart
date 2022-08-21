@@ -91,7 +91,7 @@ class CreateChurchAccountScreenView extends StatelessView<
                 ),
                 InputField(
                   controller: controller.passwordController,
-                  obscureText: controller.isShowPassword,
+                  obscureText: !controller.isShowPassword,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.done,
                 ),
@@ -155,7 +155,7 @@ class CreateChurchAccountScreenView extends StatelessView<
                   text: 'Create Account',
                   onPressed: () {
                     controller.termsAccepted
-                        ? controller.createAccount()
+                        ? controller.showTermsDialog()
                         : controller.registerError('please accept terms');
                   },
                 ),

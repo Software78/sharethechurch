@@ -3,11 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
-import 'package:sharethechurch/bloc/loginbloc/login_bloc.dart';
-import 'package:sharethechurch/bloc/registerbloc/register_bloc.dart';
-import 'package:sharethechurch/bloc/userbloc/user_bloc.dart';
+import 'package:sharethechurch/bloc/bloc.dart';
 import 'package:sharethechurch/screens/init/controller.dart';
-import 'package:sharethechurch/services/location/location.dart';
 
 import 'firebase_options.dart';
 
@@ -18,8 +15,8 @@ Map? currentUser;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
-  LocationService().getLocation();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider<UserBloc>(
@@ -30,6 +27,9 @@ void main() async {
       ),
       BlocProvider<RegisterBloc>(
         create: (context) => RegisterBloc(),
+      ),
+      BlocProvider<PasswordresetBloc>(
+        create: (context) => PasswordresetBloc(),
       ),
     ],
     child: const MyApp(),

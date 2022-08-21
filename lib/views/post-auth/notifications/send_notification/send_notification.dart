@@ -58,12 +58,7 @@ class _SendNotificationState extends State<SendNotification> {
           ),
           FilledButton(
             text: 'Send',
-            onPressed: () {
-              repository.sendNotification(
-                _titleController.text,
-                _descriptionController.text,
-              );
-            },
+            onPressed: () {},
           ),
           const SizedBox(
             height: 10,
